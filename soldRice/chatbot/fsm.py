@@ -62,6 +62,11 @@ transitions_functions = [
             "dest" : "receiver"
         },
         {
+            "trigger" :  "load_back_address",
+            "source" : "loading",
+            "dest" : "address"
+        },
+        {
             "trigger" : "go_back",
             "source": ["buying","loading"],
             "dest":"user"
@@ -93,6 +98,8 @@ class Machine(GraphMachine):
             self.load_back_amount(1)
         elif state[1] == "receiver":
             self.load_back_receiver(1)
+        elif state[1] == "address":
+            self.load_back_address(1) 
         else:
             self.go_back()
 
@@ -145,8 +152,7 @@ if __name__ == '__main__':
     # machine.set_amount(5)
     # machine.set_receiver("糙米")
     # machine.set_address("wwwww")
-    machine.load(["load","receiver"])
-    
+    response = machine.load(["load","address"])
     machine.get_graph().draw("graph.png",prog="dot",format="png")
     
 
