@@ -2,6 +2,7 @@ import os
 import yaml
 import json
 from . import fsm, utils
+from chatbot.models import Customer
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -50,10 +51,36 @@ def callback(request):
             continue
         if not isinstance(event.message.text, str):
             continue
-    
-        utils.send_confirm_message(event.reply_token,"Are you Ok" )
+
+        parsing(json_body, event)
+        # profile = line_bot_api.get_profile(json_body["events"][0]["source"]["userId"]) 
+        # print(profile.display_name) 
+        # utils.send_confirm_message(event.reply_token,profile.display_name + " 你想被幹嗎？" )
+
 
     return HttpResponse("Ok")
 
+def parsing(body,event):
+    machine = fsm.Machine(
+            states=["user", "buying", "typename", "amount", "receiver", "address","confirm", "loading"],
+            transitions = fsm.transitions_functions,
+            initial = "user",
+            auto_transitions=False,
+            show_conditions=False,
+    )
+    user_id = body["events"][0]["source"]["userId"]
+    profile = line_bot_api.get_profile(user_id)
+    customer = Customer.objects.filter(user_id=user_id)
+    print(customer)
+    print(len(customer))
+    if(len(customer) == 0):
+        customer = Customer(user_id=user_id, user_name=profile.display_name)
+        customer.save()
+    else:
+        customer = customer[0]
+    machine.load(["load",customer.state])
+    machine.event_trigger([event, customer])
+    customer.save()
+    pass
 
 # Create your views here.

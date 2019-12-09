@@ -1,7 +1,7 @@
 import os
 import yaml
 from linebot import LineBotApi
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ConfirmTemplate, PostbackAction, MessageAction
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ConfirmTemplate, ButtonsTemplate, PostbackAction, MessageAction
 
 # print(os.path.dirname(__file__))
 
@@ -16,7 +16,7 @@ with open(config_path, 'r') as f:
 
 
 def send_text_message(reply_token, text):
-    line_bot_api = LineBotApi()
+    line_bot_api = LineBotApi(ACCESS_TOKEN)
     line_bot_api.reply_message(reply_token, TextSendMessage(text=text))
 
     return "ok"
@@ -31,15 +31,28 @@ def send_confirm_message(reply_token, text):
                     actions=[
                         {
                             "type":"message",
-                            "label":"yes",
-                            "text":"yes"
+                            "label":"是",
+                            "text":"是"
                         },
                         {
                             "type":"message",
-                            "label":"no",
-                            "text":"no"
+                            "label":"否",
+                            "text":"否"
                         }
                     ])
                 ))
  
     return "ok" 
+
+def send_buttom_message(reply_token, title, text, options):
+    line_bot_api = LineBotApi(ACCESS_TOKEN)
+    line_bot_api.reply_message(reply_token,TemplateSendMessage(
+        alt_text='Buttons template',
+        template=ButtonsTemplate(
+            thumbnail_image_url='https://example.com/image.jpg',
+            title=title,
+            text=text,
+            actions=options
+            
+        )))
+    return 'ok'
