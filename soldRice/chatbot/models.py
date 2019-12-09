@@ -8,11 +8,14 @@ class Customer(models.Model):
         ('BR', 'Brown Rice'),
     ]
     products = models.CharField(max_length=5, choices=PRODUCTS,null=True)
-    amount = models.IntegerField(default=0)
+    amount = models.FloatField(default=0.0)
     receiver = models.CharField(max_length=30,null=True)
     address = models.CharField(max_length=50,null=True)
     state = models.CharField(max_length=20, default="user")
+    user_modified = models.CharField(max_length=20, null=True)
+    order = models.TextField(null=True)
     user_confirm = models.BooleanField(default=False)
+    
     
     pass
 

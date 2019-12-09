@@ -23,6 +23,7 @@ def index(request):
     print("line_bot_api : ",line_bot_api)
     return HttpResponse("Hello, world. You're at the index.")
 
+
 @csrf_exempt
 def testing(request):
     body = request.body.decode('utf-8')
@@ -62,11 +63,11 @@ def callback(request):
 
 def parsing(body,event):
     machine = fsm.Machine(
-            states=["user", "buying", "typename", "amount", "receiver", "address","confirm", "loading"],
+            states=["user", "buying", "typename", "amount", "receiver", "address","check","confirm", "not_confirm", "loading"],
             transitions = fsm.transitions_functions,
             initial = "user",
             auto_transitions=False,
-            show_conditions=False,
+            show_conditions=False
     )
     user_id = body["events"][0]["source"]["userId"]
     profile = line_bot_api.get_profile(user_id)
@@ -81,6 +82,9 @@ def parsing(body,event):
     machine.load(["load",customer.state])
     machine.event_trigger([event, customer])
     customer.save()
+    g_path = os.path.join(os.path.dirname(__file__),"graph.png")
+    print(g_path)
+    machine.get_graph().draw(g_path, prog="dot", format="png")
     pass
 
 # Create your views here.
