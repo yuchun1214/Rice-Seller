@@ -1,5 +1,5 @@
 import re
-from .utils import send_text_message, send_confirm_message, send_buttom_message
+from .utils import send_text_message, send_confirm_message, send_buttom_message, orderMail
 from termcolor import colored
 from transitions.extensions import GraphMachine
 
@@ -363,8 +363,11 @@ class Machine(GraphMachine):
         # confirm[1].user_confirm = True
         confirm[1].state = 'user'
         confirm[1].user_confirm = False
-        self.go_back(confirm)
         send_text_message(confirm[0].reply_token, "感謝您的訂購~~~")
+        mail = orderMail()
+        mail.set_content(confirm[1].order)
+        mail.sending()
+        self.go_back(confirm)
             
     def show_state(self):
         text = "now state is in %s " % colored(self.state,"green")
