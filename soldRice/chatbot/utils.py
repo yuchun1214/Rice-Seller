@@ -5,7 +5,7 @@ import smtplib
 from email.message import EmailMessage
 from email.mime.text import MIMEText
 from linebot import LineBotApi
-from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ConfirmTemplate, ButtonsTemplate, PostbackAction, MessageAction
+from linebot.models import MessageEvent, TextMessage, TextSendMessage, TemplateSendMessage, ConfirmTemplate, ButtonsTemplate, PostbackAction, MessageAction, ImageSendMessage
 
 # print(os.path.dirname(__file__))
 
@@ -96,5 +96,11 @@ def send_buttom_message(reply_token, title, text, options):
         )))
     return 'ok'
 
+def send_fsm_graph(reply_token):
+    line_bot_api = LineBotApi(ACCESS_TOKEN)
+    line_bot_api.reply_message(reply_token, ImageSendMessage(
+        original_content_url='https://bdeb2c01.ngrok.io/static/graph.png',
+        preview_image_url = 'https://bdeb2c01.ngrok.io/static/graph.png'
+    ))
 if __name__ == '__main__':
     pass

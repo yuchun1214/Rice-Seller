@@ -1,5 +1,5 @@
 import re
-from .utils import send_text_message, send_confirm_message, send_buttom_message, orderMail
+from .utils import send_text_message, send_confirm_message, send_buttom_message, orderMail, send_fsm_graph
 from termcolor import colored
 from transitions.extensions import GraphMachine
 
@@ -10,6 +10,12 @@ relations = {
 
 
 transitions_functions = [
+        {
+            "trigger" : "event_trigger",
+            "source" : "user",
+            "dest" : "graph",
+            "conditions" : "is_going_to_graph"
+        },
         {
             "trigger": "event_trigger",
             "source": "user",
@@ -131,7 +137,7 @@ transitions_functions = [
         },
         {
             "trigger" : "go_back",
-            "source": ["buying","loading","confirm"],
+            "source": ["buying","loading","confirm","graph"],
             "dest":"user"
         },
         
@@ -141,6 +147,16 @@ class Machine(GraphMachine):
     def __init__(self, **machine_configs):
         self.machine = GraphMachine(model=self, **machine_configs)
     
+    def is_going_to_graph(self, event):
+        return event[0].message.text == 'graph'
+    
+    def on_enter_graph(self, event):
+        self.show_state()
+        send_fsm_graph(event[0].reply_token)
+        self.go_back(0)
+
+        pass
+
     def on_enter_user(self,event):
         self.show_state()
         #event[1].state = 'user'

@@ -63,7 +63,7 @@ def callback(request):
 
 def parsing(body,event):
     machine = fsm.Machine(
-            states=["user", "buying", "typename", "amount", "receiver", "address","check","confirm", "not_confirm", "loading"],
+            states=["graph","user", "buying", "typename", "amount", "receiver", "address","check","confirm", "not_confirm", "loading"],
             transitions = fsm.transitions_functions,
             initial = "user",
             auto_transitions=False,
@@ -82,7 +82,7 @@ def parsing(body,event):
     machine.load(["load",customer.state])
     machine.event_trigger([event, customer])
     customer.save()
-    g_path = os.path.join(os.path.dirname(__file__),"graph.png")
+    g_path = os.path.join(os.path.dirname(__file__),"static/graph.png")
     print(g_path)
     machine.get_graph().draw(g_path, prog="dot", format="png")
     pass
