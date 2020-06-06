@@ -1,6 +1,6 @@
 certifi==2019.11.28
 chardet==3.0.4
-Django==2.2.7
+Django==2.2.13
 future==0.18.2
 idna==2.8
 line-bot-sdk==1.15.0
